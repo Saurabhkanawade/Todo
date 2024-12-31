@@ -1,0 +1,14 @@
+output   = "internal/dbmodels"
+no-tests = "true"
+no-hooks = "true"
+wipe = "true"
+pkgname = "dbmodels"
+recurse = true
+
+[psql]
+host="localhost"
+sslmode="disable"
+dbname = "todo"
+user = "postgres"
+pass = "omsairam"
+[auto-columns]
