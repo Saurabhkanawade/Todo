@@ -37,8 +37,16 @@ func startWebServer() {
 	router := mux.NewRouter().StrictSlash(true)
 	ctx := context.Background()
 
-	// server swagger page
 	// set up v1 router
+	v1Router := router.PathPrefix("/v1").Subrouter()
+
+	// server swagger page
+
+	//transport
+	//endpoints
+	//services
+	//dao
+
 	err = server.StartServer(ctx, router,
 		server.SetPort(config.GetServerPort()),
 		server.SetReadTimeout(time.Duration(config.GetReadTimeout())),

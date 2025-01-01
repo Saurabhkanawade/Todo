@@ -3,7 +3,6 @@ no-tests = "true"
 no-hooks = "true"
 wipe = "true"
 pkgname = "dbmodels"
-recurse = true
 
 [psql]
 host="localhost"
