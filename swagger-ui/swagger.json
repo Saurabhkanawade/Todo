@@ -1,0 +1,14 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "GoKit API",
+    "description": "API documentation for GoKit application"
+  },
+  "host": "localhost:9090",
+  "basePath": "/api/v1",
+  "schemes": [
+    "http"
+  ],
+  "paths": {}
+}

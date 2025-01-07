@@ -3,6 +3,7 @@ package transport
 import (
 	"context"
 	"encoding/json"
+	"github.com/Saurabhkanawade/eagle-common-service/httptransport"
 	"github.com/Saurabhkanawade/todo_rest_service/internal/endpoints"
 	httpServer "github.com/go-kit/kit/transport/http"
 	"github.com/gofrs/uuid"
@@ -13,11 +14,12 @@ import (
 )
 
 func CreateTaskHttpHandler(endpoint endpoints.TaskEndpoints, router *mux.Router) {
+
 	router.Handle("/task",
 		httpServer.NewServer(
 			endpoint.CreateTask,
 			decodeCreateTask,
-			encodeResponse,
+			httptransport.EncodePostResponse,
 		),
 	).Methods(http.MethodPost)
 
@@ -43,7 +45,7 @@ func GetTasksHttpHandlers(endpoint endpoints.TaskEndpoints, router *mux.Router) 
 		httpServer.NewServer(
 			endpoint.GetAllTask,
 			decodeGetAllTask,
-			encodeResponse,
+			httptransport.EncodeResponse,
 		),
 	).Methods(http.MethodGet)
 }
@@ -57,7 +59,7 @@ func GetTaskHttpHandlers(endpoint endpoints.TaskEndpoints, router *mux.Router) {
 		httpServer.NewServer(
 			endpoint.GetTask,
 			decodeGetTask,
-			encodeResponse,
+			httptransport.EncodeResponse,
 		),
 	).Methods(http.MethodGet)
 }
@@ -82,7 +84,7 @@ func UpdateTaskHttpHandlers(endpoint endpoints.TaskEndpoints, router *mux.Router
 		httpServer.NewServer(
 			endpoint.UpdateTask,
 			decodeUpdateTask,
-			encodeResponse,
+			httptransport.EncodeResponse,
 		),
 	).Methods(http.MethodPut)
 }
@@ -118,7 +120,7 @@ func DeleteTaskHttpHandlers(endpoint endpoints.TaskEndpoints, router *mux.Router
 		httpServer.NewServer(
 			endpoint.DeleteTask,
 			decodeDeleteTask,
-			encodeResponse,
+			httptransport.EncodeResponse,
 		),
 	).Methods(http.MethodDelete)
 }
@@ -134,12 +136,4 @@ func decodeDeleteTask(ctx context.Context, request2 *http.Request) (interface{},
 	return endpoints.DeleteTaskByIdRequest{
 		TaskId: taskUuid,
 	}, nil
-}
-
-func encodeResponse(ctx context.Context, writer http.ResponseWriter, response interface{}) error {
-	if err, ok := response.(error); ok && err != nil {
-		logrus.Warnf("encode() - error %v :", ok)
-	}
-	writer.Header().Set("Content-Type", "application/json")
-	return json.NewEncoder(writer).Encode(response)
 }
