@@ -127,6 +127,8 @@ type (
 	// TodoListSlice is an alias for a slice of pointers to TodoList.
 	// This should almost always be used instead of []TodoList.
 	TodoListSlice []*TodoList
+	// TodoListHook is the signature for custom TodoList hook methods
+	TodoListHook func(context.Context, boil.ContextExecutor, *TodoList) error
 
 	todoListQuery struct {
 		*queries.Query
@@ -154,6 +156,179 @@ var (
 	_ = qmhelper.Where
 )
 
+var todoListAfterSelectHooks []TodoListHook
+
+var todoListBeforeInsertHooks []TodoListHook
+var todoListAfterInsertHooks []TodoListHook
+
+var todoListBeforeUpdateHooks []TodoListHook
+var todoListAfterUpdateHooks []TodoListHook
+
+var todoListBeforeDeleteHooks []TodoListHook
+var todoListAfterDeleteHooks []TodoListHook
+
+var todoListBeforeUpsertHooks []TodoListHook
+var todoListAfterUpsertHooks []TodoListHook
+
+// doAfterSelectHooks executes all "after Select" hooks.
+func (o *TodoList) doAfterSelectHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+	if boil.HooksAreSkipped(ctx) {
+		return nil
+	}
+
+	for _, hook := range todoListAfterSelectHooks {
+		if err := hook(ctx, exec, o); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// doBeforeInsertHooks executes all "before insert" hooks.
+func (o *TodoList) doBeforeInsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+	if boil.HooksAreSkipped(ctx) {
+		return nil
+	}
+
+	for _, hook := range todoListBeforeInsertHooks {
+		if err := hook(ctx, exec, o); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// doAfterInsertHooks executes all "after Insert" hooks.
+func (o *TodoList) doAfterInsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+	if boil.HooksAreSkipped(ctx) {
+		return nil
+	}
+
+	for _, hook := range todoListAfterInsertHooks {
+		if err := hook(ctx, exec, o); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// doBeforeUpdateHooks executes all "before Update" hooks.
+func (o *TodoList) doBeforeUpdateHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+	if boil.HooksAreSkipped(ctx) {
+		return nil
+	}
+
+	for _, hook := range todoListBeforeUpdateHooks {
+		if err := hook(ctx, exec, o); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// doAfterUpdateHooks executes all "after Update" hooks.
+func (o *TodoList) doAfterUpdateHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+	if boil.HooksAreSkipped(ctx) {
+		return nil
+	}
+
+	for _, hook := range todoListAfterUpdateHooks {
+		if err := hook(ctx, exec, o); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// doBeforeDeleteHooks executes all "before Delete" hooks.
+func (o *TodoList) doBeforeDeleteHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+	if boil.HooksAreSkipped(ctx) {
+		return nil
+	}
+
+	for _, hook := range todoListBeforeDeleteHooks {
+		if err := hook(ctx, exec, o); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// doAfterDeleteHooks executes all "after Delete" hooks.
+func (o *TodoList) doAfterDeleteHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+	if boil.HooksAreSkipped(ctx) {
+		return nil
+	}
+
+	for _, hook := range todoListAfterDeleteHooks {
+		if err := hook(ctx, exec, o); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// doBeforeUpsertHooks executes all "before Upsert" hooks.
+func (o *TodoList) doBeforeUpsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+	if boil.HooksAreSkipped(ctx) {
+		return nil
+	}
+
+	for _, hook := range todoListBeforeUpsertHooks {
+		if err := hook(ctx, exec, o); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// doAfterUpsertHooks executes all "after Upsert" hooks.
+func (o *TodoList) doAfterUpsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+	if boil.HooksAreSkipped(ctx) {
+		return nil
+	}
+
+	for _, hook := range todoListAfterUpsertHooks {
+		if err := hook(ctx, exec, o); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// AddTodoListHook registers your hook function for all future operations.
+func AddTodoListHook(hookPoint boil.HookPoint, todoListHook TodoListHook) {
+	switch hookPoint {
+	case boil.AfterSelectHook:
+		todoListAfterSelectHooks = append(todoListAfterSelectHooks, todoListHook)
+	case boil.BeforeInsertHook:
+		todoListBeforeInsertHooks = append(todoListBeforeInsertHooks, todoListHook)
+	case boil.AfterInsertHook:
+		todoListAfterInsertHooks = append(todoListAfterInsertHooks, todoListHook)
+	case boil.BeforeUpdateHook:
+		todoListBeforeUpdateHooks = append(todoListBeforeUpdateHooks, todoListHook)
+	case boil.AfterUpdateHook:
+		todoListAfterUpdateHooks = append(todoListAfterUpdateHooks, todoListHook)
+	case boil.BeforeDeleteHook:
+		todoListBeforeDeleteHooks = append(todoListBeforeDeleteHooks, todoListHook)
+	case boil.AfterDeleteHook:
+		todoListAfterDeleteHooks = append(todoListAfterDeleteHooks, todoListHook)
+	case boil.BeforeUpsertHook:
+		todoListBeforeUpsertHooks = append(todoListBeforeUpsertHooks, todoListHook)
+	case boil.AfterUpsertHook:
+		todoListAfterUpsertHooks = append(todoListAfterUpsertHooks, todoListHook)
+	}
+}
+
 // One returns a single todoList record from the query.
 func (q todoListQuery) One(ctx context.Context, exec boil.ContextExecutor) (*TodoList, error) {
 	o := &TodoList{}
@@ -168,6 +343,10 @@ func (q todoListQuery) One(ctx context.Context, exec boil.ContextExecutor) (*Tod
 		return nil, errors.Wrap(err, "dbmodels: failed to execute a one query for todo_list")
 	}
 
+	if err := o.doAfterSelectHooks(ctx, exec); err != nil {
+		return o, err
+	}
+
 	return o, nil
 }
 
@@ -178,6 +357,14 @@ func (q todoListQuery) All(ctx context.Context, exec boil.ContextExecutor) (Todo
 	err := q.Bind(ctx, exec, &o)
 	if err != nil {
 		return nil, errors.Wrap(err, "dbmodels: failed to assign all query results to TodoList slice")
+	}
+
+	if len(todoListAfterSelectHooks) != 0 {
+		for _, obj := range o {
+			if err := obj.doAfterSelectHooks(ctx, exec); err != nil {
+				return o, err
+			}
+		}
 	}
 
 	return o, nil
@@ -321,6 +508,14 @@ func (todoListL) LoadUser(ctx context.Context, e boil.ContextExecutor, singular 
 		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for users")
 	}
 
+	if len(userAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+
 	if len(resultSlice) == 0 {
 		return nil
 	}
@@ -431,6 +626,13 @@ func (todoListL) LoadTasks(ctx context.Context, e boil.ContextExecutor, singular
 		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for tasks")
 	}
 
+	if len(taskAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
 	if singular {
 		object.R.Tasks = resultSlice
 		for _, foreign := range resultSlice {
@@ -592,6 +794,10 @@ func FindTodoList(ctx context.Context, exec boil.ContextExecutor, iD string, sel
 		return nil, errors.Wrap(err, "dbmodels: unable to select from todo_list")
 	}
 
+	if err = todoListObj.doAfterSelectHooks(ctx, exec); err != nil {
+		return todoListObj, err
+	}
+
 	return todoListObj, nil
 }
 
@@ -612,6 +818,10 @@ func (o *TodoList) Insert(ctx context.Context, exec boil.ContextExecutor, column
 		if queries.MustTime(o.UpdatedAt).IsZero() {
 			queries.SetScanner(&o.UpdatedAt, currTime)
 		}
+	}
+
+	if err := o.doBeforeInsertHooks(ctx, exec); err != nil {
+		return err
 	}
 
 	nzDefaults := queries.NonZeroDefaultSet(todoListColumnsWithDefault, o)
@@ -677,7 +887,7 @@ func (o *TodoList) Insert(ctx context.Context, exec boil.ContextExecutor, column
 		todoListInsertCacheMut.Unlock()
 	}
 
-	return nil
+	return o.doAfterInsertHooks(ctx, exec)
 }
 
 // Update uses an executor to update the TodoList.
@@ -691,6 +901,9 @@ func (o *TodoList) Update(ctx context.Context, exec boil.ContextExecutor, column
 	}
 
 	var err error
+	if err = o.doBeforeUpdateHooks(ctx, exec); err != nil {
+		return 0, err
+	}
 	key := makeCacheKey(columns, nil)
 	todoListUpdateCacheMut.RLock()
 	cache, cached := todoListUpdateCache[key]
@@ -743,7 +956,7 @@ func (o *TodoList) Update(ctx context.Context, exec boil.ContextExecutor, column
 		todoListUpdateCacheMut.Unlock()
 	}
 
-	return rowsAff, nil
+	return rowsAff, o.doAfterUpdateHooks(ctx, exec)
 }
 
 // UpdateAll updates all rows with the specified column values.
@@ -824,6 +1037,10 @@ func (o *TodoList) Upsert(ctx context.Context, exec boil.ContextExecutor, update
 			queries.SetScanner(&o.CreatedAt, currTime)
 		}
 		queries.SetScanner(&o.UpdatedAt, currTime)
+	}
+
+	if err := o.doBeforeUpsertHooks(ctx, exec); err != nil {
+		return err
 	}
 
 	nzDefaults := queries.NonZeroDefaultSet(todoListColumnsWithDefault, o)
@@ -928,7 +1145,7 @@ func (o *TodoList) Upsert(ctx context.Context, exec boil.ContextExecutor, update
 		todoListUpsertCacheMut.Unlock()
 	}
 
-	return nil
+	return o.doAfterUpsertHooks(ctx, exec)
 }
 
 // Delete deletes a single TodoList record with an executor.
@@ -936,6 +1153,10 @@ func (o *TodoList) Upsert(ctx context.Context, exec boil.ContextExecutor, update
 func (o *TodoList) Delete(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
 	if o == nil {
 		return 0, errors.New("dbmodels: no TodoList provided for delete")
+	}
+
+	if err := o.doBeforeDeleteHooks(ctx, exec); err != nil {
+		return 0, err
 	}
 
 	args := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), todoListPrimaryKeyMapping)
@@ -954,6 +1175,10 @@ func (o *TodoList) Delete(ctx context.Context, exec boil.ContextExecutor) (int64
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
 		return 0, errors.Wrap(err, "dbmodels: failed to get rows affected by delete for todo_list")
+	}
+
+	if err := o.doAfterDeleteHooks(ctx, exec); err != nil {
+		return 0, err
 	}
 
 	return rowsAff, nil
@@ -986,6 +1211,14 @@ func (o TodoListSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor)
 		return 0, nil
 	}
 
+	if len(todoListBeforeDeleteHooks) != 0 {
+		for _, obj := range o {
+			if err := obj.doBeforeDeleteHooks(ctx, exec); err != nil {
+				return 0, err
+			}
+		}
+	}
+
 	var args []interface{}
 	for _, obj := range o {
 		pkeyArgs := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(obj)), todoListPrimaryKeyMapping)
@@ -1008,6 +1241,14 @@ func (o TodoListSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor)
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
 		return 0, errors.Wrap(err, "dbmodels: failed to get rows affected by deleteall for todo_list")
+	}
+
+	if len(todoListAfterDeleteHooks) != 0 {
+		for _, obj := range o {
+			if err := obj.doAfterDeleteHooks(ctx, exec); err != nil {
+				return 0, err
+			}
+		}
 	}
 
 	return rowsAff, nil

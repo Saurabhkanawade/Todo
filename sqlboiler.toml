@@ -1,6 +1,4 @@
 output   = "internal/dbmodels"
-no-tests = "true"
-no-hooks = "true"
 wipe = "true"
 pkgname = "dbmodels"
 

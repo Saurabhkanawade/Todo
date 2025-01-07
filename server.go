@@ -2,18 +2,24 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"github.com/Saurabhkanawade/eagle-common-service/config"
 	"github.com/Saurabhkanawade/eagle-common-service/database"
-	"github.com/Saurabhkanawade/eagle-common-service/server"
+	dao "github.com/Saurabhkanawade/todo_rest_service/internal/database"
+	"github.com/Saurabhkanawade/todo_rest_service/internal/endpoints"
+	"github.com/Saurabhkanawade/todo_rest_service/internal/middleware"
+	"github.com/Saurabhkanawade/todo_rest_service/internal/services"
+	"github.com/Saurabhkanawade/todo_rest_service/internal/transport"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
+	"net/http"
 	"time"
 )
 
 func startWebServer() {
 
 	dbConfig := database.DbConfig{
-		Host:   config.GetPostgresPass(),
+		Host:   config.GetPostgresHost(),
 		Port:   config.GetPostgresPort(),
 		User:   config.GetPostgresUser(),
 		Pass:   config.GetPostgresPass(),
@@ -34,25 +40,53 @@ func startWebServer() {
 	//}
 
 	//setup the router
-	router := mux.NewRouter().StrictSlash(true)
+	router := mux.NewRouter()
 	ctx := context.Background()
 
 	// set up v1 router
-	v1Router := router.PathPrefix("/v1").Subrouter()
+	v1Router := router.PathPrefix("/v1").Subrouter().StrictSlash(true)
+
+	//attach middleware
+	v1Router.Use(middleware.LoggingMiddleware)
 
 	// server swagger page
 
-	//transport
-	//endpoints
+	//instantiate the endpoint
+	taskDao := dao.NewTaskDao(dbConnection)
+
 	//services
-	//dao
+	taskService := services.NewTaskService(taskDao)
 
-	err = server.StartServer(ctx, router,
-		server.SetPort(config.GetServerPort()),
-		server.SetReadTimeout(time.Duration(config.GetReadTimeout())),
-		server.SetWriteTimeout(time.Duration(config.GetWriteTimeout())))
+	//endpoints
+	taskEndpoint := endpoints.MakeTaskEndpoints(taskService)
 
-	if err != nil {
-		logrus.Errorf("error while starting the server %s", err.Error())
+	//transport
+	transport.CreateTaskHttpHandler(taskEndpoint, v1Router)
+	transport.GetTaskHttpHandlers(taskEndpoint, v1Router)
+	transport.GetTasksHttpHandlers(taskEndpoint, v1Router)
+	transport.UpdateTaskHttpHandlers(taskEndpoint, v1Router)
+	transport.DeleteTaskHttpHandlers(taskEndpoint, v1Router)
+
+	startServer(ctx, v1Router)
+}
+
+// starting the server function
+func startServer(ctx context.Context, router *mux.Router) {
+
+	serverPort := fmt.Sprintf(":%s", config.GetServerPort())
+	logrus.Infof("Starting server on %s.........", serverPort)
+
+	readTimeout := time.Duration(config.GetReadTimeout())
+	writeTimeout := time.Duration(config.GetWriteTimeout())
+
+	server := &http.Server{
+		Addr:         serverPort,
+		ReadTimeout:  readTimeout * time.Second,
+		WriteTimeout: writeTimeout * time.Second,
+		Handler:      router,
+	}
+
+	if err := server.ListenAndServe(); err != nil {
+		logrus.Fatalf("failed to start the server on %s %v", config.GetServerPort(), err)
 	}
 }

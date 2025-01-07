@@ -1,0 +1,1 @@
+Use Redis for in memory cache storage

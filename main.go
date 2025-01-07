@@ -8,6 +8,8 @@ import (
 func main() {
 	logrus.Infof("starting portal-services")
 
+	config.LoadConfig(config.GetAppEnvLocation())
+
 	//check required vars
 	err := config.CheckRequiredVariables()
 	if err != nil {
