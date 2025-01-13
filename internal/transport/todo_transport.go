@@ -14,6 +14,19 @@ import (
 )
 
 func CreateTaskHttpHandler(endpoint endpoints.TaskEndpoints, router *mux.Router) {
+	// swagger:operation POST /task tasks createTask
+	// ---
+	// summary: Creates an new task
+	// parameters:
+	// - name: task
+	//   in: body
+	//   description: the organization to create task
+	//   schema:
+	//     "$ref": "#/definitions/CreateTaskRequest"
+	//   required: true
+	// responses:
+	//   "201":
+	//     "$ref": "#/responses/CreateTaskResponse"
 
 	router.Handle("/task",
 		httpServer.NewServer(
@@ -41,6 +54,12 @@ func decodeCreateTask(ctx context.Context, request *http.Request) (request2 inte
 }
 
 func GetTasksHttpHandlers(endpoint endpoints.TaskEndpoints, router *mux.Router) {
+	// swagger:operation GET /tasks tasks getTasks
+	//---
+	// summary: Returns the Tasks
+	// responses:
+	//   "200":
+	//     "$ref": "#/responses/GetAllTaskResponse"
 	router.Handle("/tasks",
 		httpServer.NewServer(
 			endpoint.GetAllTask,
@@ -55,6 +74,18 @@ func decodeGetAllTask(ctx context.Context, request2 *http.Request) (request inte
 }
 
 func GetTaskHttpHandlers(endpoint endpoints.TaskEndpoints, router *mux.Router) {
+	// swagger:operation GET /task/{taskId} tasks getTask
+	//---
+	// summary: Returns the Task with the provided ID
+	// parameters:
+	// - name: taskId
+	//   in: path
+	//   description: the task to get
+	//   type: string
+	//   required: true
+	// responses:
+	//   "200":
+	//     "$ref": "#/responses/GetTaskByIDResponse"
 	router.Handle("/task/{taskId}",
 		httpServer.NewServer(
 			endpoint.GetTask,
@@ -80,6 +111,24 @@ func decodeGetTask(ctx context.Context, request2 *http.Request) (request interfa
 }
 
 func UpdateTaskHttpHandlers(endpoint endpoints.TaskEndpoints, router *mux.Router) {
+	// swagger:operation PUT /task/{taskId} tasks updateTask
+	// ---
+	// summary: Updates an task
+	// parameters:
+	// - name: taskId
+	//   in: path
+	//   description: The existing task to update
+	//   type: string
+	//   required: true
+	// - name: task
+	//   in: body
+	//   description: the task to update
+	//   schema:
+	//     "$ref": "#/definitions/UpdateTaskRequestBody"
+	//   required: true
+	// responses:
+	//   "201":
+	//     "$ref": "#/responses/UpdateTaskResponse"
 	router.Handle("/task/{taskId}",
 		httpServer.NewServer(
 			endpoint.UpdateTask,
@@ -116,6 +165,18 @@ func decodeUpdateTask(ctx context.Context, request2 *http.Request) (interface{},
 }
 
 func DeleteTaskHttpHandlers(endpoint endpoints.TaskEndpoints, router *mux.Router) {
+	// swagger:operation DELETE /task/{taskId} tasks deleteTask
+	// ---
+	// summary: Deletes an task
+	// parameters:
+	// - name: taskId
+	//   in: path
+	//   description: The task to delete
+	//   type: string
+	//   required: true
+	// responses:
+	//   "200":
+	//     "$ref": "#/responses/DeleteTaskByIdResponse"
 	router.Handle("/task/{taskId}",
 		httpServer.NewServer(
 			endpoint.DeleteTask,

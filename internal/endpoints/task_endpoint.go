@@ -26,11 +26,16 @@ func MakeTaskEndpoints(taskService services.TaskService) TaskEndpoints {
 	}
 }
 
+// CreateTaskRequest
+// swagger:model CreateTaskRequest
 type CreateTaskRequest struct {
 	Task models.Task `json:"task"`
 }
 
+// CreateTaskResponse
+// swagger:response CreateTaskResponse
 type CreateTaskResponse struct {
+	//in:body
 	Task models.Task `json:"task"`
 }
 
@@ -56,7 +61,10 @@ type GetTaskByIDParamsRequest struct {
 	TaskId uuid.UUID
 }
 
+// GetTaskByIDResponse
+// swagger:response GetTaskByIDResponse
 type GetTaskByIDResponse struct {
+	//in:body
 	Task models.Task `json:"task"`
 }
 
@@ -80,7 +88,10 @@ func MakeGetTaskEndpoint(service services.TaskService) endpoint.Endpoint {
 type GetAllTaskRequest struct {
 }
 
+// GetAllTaskResponse
+// swagger:response GetAllTaskResponse
 type GetAllTaskResponse struct {
+	//in:body
 	Tasks []models.Task `json:"tasks"`
 }
 
@@ -99,10 +110,13 @@ func MakeGetAllTaskEndpoint(service services.TaskService) endpoint.Endpoint {
 	}
 }
 
+// swagger:model UpdateTaskRequestBody
 type UpdateTaskRequestBody struct {
 	Task models.Task `json:"task"`
 }
 
+// UpdateTaskResponse
+// swagger:response UpdateTaskResponse
 type UpdateTaskResponse struct {
 }
 
@@ -124,6 +138,8 @@ type DeleteTaskByIdRequest struct {
 	TaskId uuid.UUID
 }
 
+// DeleteTaskByIdResponse
+// swagger:response DeleteTaskByIdResponse
 type DeleteTaskByIdResponse struct {
 }
 

@@ -50,6 +50,10 @@ func startWebServer() {
 	v1Router.Use(middleware.LoggingMiddleware)
 
 	// server swagger page
+	fs := http.FileServer(http.Dir("./swagger-ui"))
+
+	router.PathPrefix("/swagger-ui").
+		Handler(http.StripPrefix("/swagger-ui", fs))
 
 	//instantiate the endpoint
 	taskDao := dao.NewTaskDao(dbConnection)

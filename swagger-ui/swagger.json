@@ -1,14 +1,226 @@
 {
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
   "swagger": "2.0",
   "info": {
-    "version": "1.0.0",
-    "title": "GoKit API",
-    "description": "API documentation for GoKit application"
+    "description": "# Endpoints for Tasks\n\nTodo:",
+    "title": "API.",
+    "version": "1.0.0"
   },
-  "host": "localhost:9090",
-  "basePath": "/api/v1",
-  "schemes": [
-    "http"
-  ],
-  "paths": {}
+  "paths": {
+    "/task": {
+      "post": {
+        "tags": [
+          "tasks"
+        ],
+        "summary": "Creates an new task",
+        "operationId": "createTask",
+        "parameters": [
+          {
+            "description": "the organization to create task",
+            "name": "task",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateTaskRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/responses/CreateTaskResponse"
+          }
+        }
+      }
+    },
+    "/task/{taskId}": {
+      "get": {
+        "tags": [
+          "tasks"
+        ],
+        "summary": "Returns the Task with the provided ID",
+        "operationId": "getTask",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "the task to get",
+            "name": "taskId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetTaskByIDResponse"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "tasks"
+        ],
+        "summary": "Updates an task",
+        "operationId": "updateTask",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The existing task to update",
+            "name": "taskId",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "the task to update",
+            "name": "task",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateTaskRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/responses/UpdateTaskResponse"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "tasks"
+        ],
+        "summary": "Deletes an task",
+        "operationId": "deleteTask",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The task to delete",
+            "name": "taskId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/DeleteTaskByIdResponse"
+          }
+        }
+      }
+    },
+    "/tasks": {
+      "get": {
+        "tags": [
+          "tasks"
+        ],
+        "summary": "Returns the Tasks",
+        "operationId": "getTasks",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetAllTaskResponse"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "CreateTaskRequest": {
+      "description": "CreateTaskRequest",
+      "type": "object",
+      "properties": {
+        "task": {
+          "$ref": "#/definitions/Task"
+        }
+      },
+      "x-go-package": "github.com/Saurabhkanawade/todo_rest_service/internal/endpoints"
+    },
+    "Task": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "x-go-name": "Description"
+        },
+        "due_date": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "DueDate"
+        },
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "x-go-name": "ID"
+        },
+        "priority": {
+          "$ref": "#/definitions/TaskPriority"
+        },
+        "status": {
+          "$ref": "#/definitions/TaskStatus"
+        },
+        "title": {
+          "type": "string",
+          "x-go-name": "Title"
+        },
+        "todo_list_id": {
+          "type": "string",
+          "format": "uuid",
+          "x-go-name": "TodoListID"
+        }
+      },
+      "x-go-package": "github.com/Saurabhkanawade/todo_rest_service/internal/models"
+    },
+    "TaskPriority": {
+      "type": "string",
+      "x-go-package": "github.com/Saurabhkanawade/todo_rest_service/internal/models"
+    },
+    "TaskStatus": {
+      "type": "string",
+      "x-go-package": "github.com/Saurabhkanawade/todo_rest_service/internal/models"
+    },
+    "UpdateTaskRequestBody": {
+      "type": "object",
+      "properties": {
+        "task": {
+          "$ref": "#/definitions/Task"
+        }
+      },
+      "x-go-package": "github.com/Saurabhkanawade/todo_rest_service/internal/endpoints"
+    }
+  },
+  "responses": {
+    "CreateTaskResponse": {
+      "description": "CreateTaskResponse",
+      "schema": {
+        "$ref": "#/definitions/Task"
+      }
+    },
+    "DeleteTaskByIdResponse": {
+      "description": "DeleteTaskByIdResponse"
+    },
+    "GetAllTaskResponse": {
+      "description": "GetAllTaskResponse",
+      "schema": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/Task"
+        }
+      }
+    },
+    "GetTaskByIDResponse": {
+      "description": "GetTaskByIDResponse",
+      "schema": {
+        "$ref": "#/definitions/Task"
+      }
+    },
+    "UpdateTaskResponse": {
+      "description": "UpdateTaskResponse"
+    }
+  }
 }
